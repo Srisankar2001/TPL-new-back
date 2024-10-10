@@ -35,8 +35,7 @@ public class JWTService {
     }
 
     private Claims extractAllClaims(String token) {
-        return Jwts
-                .parser()
+        return Jwts.parser()
                 .verifyWith(getSignKey())
                 .build()
                 .parseSignedClaims(token)
@@ -52,39 +51,51 @@ public class JWTService {
         return (username.equals(userDetails.getUsername()) && !isTokenExpired(token));
     }
     public List<?> generateAccessToken(User user){
-        Map<String,Object> claims = new HashMap<>();
-        Date issueAt = new Date(System.currentTimeMillis());
-        Date expireAt = new Date(System.currentTimeMillis() +  1000*60*60);
-        String token =  Jwts.builder()
-                .claims()
-                .add(claims)
-                .subject(user.getEmail())
-                .issuedAt(new Date(System.currentTimeMillis()))
-                .expiration(new Date(System.currentTimeMillis() + 1000*60*30))
-                .and()
-                .signWith(getSignKey())
-                .compact();
-        return List.of(token,expireAt);
+        try{
+            Map<String,Object> claims = new HashMap<>();
+            claims.put("id",user.getId());
+            Date issueAt = new Date(System.currentTimeMillis());
+            Date expireAt = new Date(System.currentTimeMillis() +  1000*60*60);
+            String token =  Jwts.builder()
+                    .claims(claims)
+                    .subject(user.getEmail())
+                    .issuedAt(issueAt)
+                    .expiration(expireAt)
+                    .signWith(getSignKey())
+                    .compact();
+            return List.of(token,expireAt);
+        }catch(Exception e){
+            System.err.println(e);
+            return null;
+        }
     }
 
     public List<?> generateRefreshToken(User user){
-        Map<String,Object> claims = new HashMap<>();
-        Date issueAt = new Date(System.currentTimeMillis());
-        Date expireAt = new Date(System.currentTimeMillis() +  1000*60*60*24);
-        String token = Jwts.builder()
-                .claims()
-                .add(claims)
-                .subject(user.getEmail())
-                .issuedAt(issueAt)
-                .expiration(expireAt)
-                .and()
-                .signWith(getSignKey())
-                .compact();
-        return List.of(token,expireAt);
+        try{
+            Map<String,Object> claims = new HashMap<>();
+            claims.put("id",user.getId());
+            Date issueAt = new Date(System.currentTimeMillis());
+            Date expireAt = new Date(System.currentTimeMillis() +  1000*60*60*24);
+            String token = Jwts.builder()
+                    .claims(claims)
+                    .subject(user.getEmail())
+                    .issuedAt(issueAt)
+                    .expiration(expireAt)
+                    .signWith(getSignKey())
+                    .compact();
+            return List.of(token,expireAt);
+        }catch(Exception e){
+            System.err.println(e);
+            return null;
+        }
     }
 
     private SecretKey getSignKey() {
-        byte[] keyBytes = Decoders.BASE64.decode("${SECRET_KEY}");
+        String secretKey = System.getenv("SECRET_KEY");
+        if (secretKey == null || secretKey.isEmpty()) {
+            throw new IllegalStateException("SECRET_KEY is not set");
+        }
+        byte[] keyBytes = Decoders.BASE64.decode(secretKey);
         return Keys.hmacShaKeyFor(keyBytes);
     }
 

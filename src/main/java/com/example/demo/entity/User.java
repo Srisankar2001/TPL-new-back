@@ -29,6 +29,6 @@ public class User {
     private String password;
     @ManyToMany(cascade = CascadeType.ALL)
     private Set<Role> roles = new HashSet<>();
-    @OneToOne
+    @OneToOne(cascade = CascadeType.ALL)
     private RefreshToken token;
 }
