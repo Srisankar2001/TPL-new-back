@@ -1,5 +1,7 @@
 package com.example.demo.entity;
 
+import com.fasterxml.jackson.annotation.JsonIgnore;
+import com.fasterxml.jackson.annotation.JsonManagedReference;
 import jakarta.persistence.*;
 import lombok.AllArgsConstructor;
 import lombok.Builder;
@@ -27,8 +29,10 @@ public class User {
     private String email;
     @Column(nullable = false)
     private String password;
-    @ManyToMany(cascade = CascadeType.ALL)
+    @ManyToMany(fetch = FetchType.EAGER)
+    @JsonManagedReference
     private Set<Role> roles = new HashSet<>();
-    @OneToOne(cascade = CascadeType.ALL)
+    @OneToOne
+    @JsonManagedReference
     private RefreshToken token;
 }

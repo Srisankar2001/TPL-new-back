@@ -1,5 +1,6 @@
 package com.example.demo.entity;
 
+import com.fasterxml.jackson.annotation.JsonBackReference;
 import jakarta.persistence.*;
 import lombok.AllArgsConstructor;
 import lombok.Builder;
@@ -21,5 +22,6 @@ public class RefreshToken {
     private String token;
     private Date expireAt;
     @OneToOne(mappedBy = "token")
+    @JsonBackReference
     private User user;
 }

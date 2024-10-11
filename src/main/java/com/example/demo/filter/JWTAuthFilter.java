@@ -24,11 +24,6 @@ public class JWTAuthFilter extends OncePerRequestFilter {
     private MyUserDetailsService userDetailsService;
     @Override
     protected void doFilterInternal(HttpServletRequest request, HttpServletResponse response, FilterChain filterChain) throws ServletException, IOException {
-        String path = request.getServletPath();
-        if (path.startsWith("/api/auth")) {
-            filterChain.doFilter(request, response);
-            return;
-        }
         String authHeader = request.getHeader("Authorization");
         String token = null;
         String username = null;

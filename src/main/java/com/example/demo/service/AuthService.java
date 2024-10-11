@@ -150,18 +150,18 @@ public class AuthService {
     }
 
     public Response<?> decode(TokenRequest tokenRequest) {
-        String email = jwtService.extractUsername(tokenRequest.getToken());
-        Optional<User> user = userRepository.findByEmail(email);
-        if(user.isPresent()){
-            return Response.builder()
-                    .status(true)
-                    .data(user.get())
-                    .build();
-        }else{
-            return Response.builder()
-                    .status(false)
-                    .message("User Not Found")
-                    .build();
-        }
+            String email = jwtService.extractUsername(tokenRequest.getToken());
+            Optional<User> user = userRepository.findByEmail(email);
+            if(user.isPresent()){
+                return Response.builder()
+                        .status(true)
+                        .data(user.get())
+                        .build();
+            }else{
+                return Response.builder()
+                        .status(false)
+                        .message("User Not Found")
+                        .build();
+            }
     }
 }
