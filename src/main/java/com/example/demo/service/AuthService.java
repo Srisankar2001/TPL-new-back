@@ -80,6 +80,12 @@ public class AuthService {
                 Optional<User> user = userRepository.findByEmail(loginRequest.getEmail());
                 if(user.isPresent()){
                     User savedUser = user.get();
+                    if(savedUser.getToken() != null) {
+                        RefreshToken token = savedUser.getToken();
+                        savedUser.setToken(null);
+                        userRepository.save(savedUser);
+                        refreshTokenRepository.delete(token);
+                    }
                     List<?> listRefreshToken = jwtService.generateRefreshToken(savedUser);
                     List<?> listAccessToken = jwtService.generateAccessToken(savedUser);
                     RefreshToken refreshToken = RefreshToken.builder()
@@ -117,6 +123,7 @@ public class AuthService {
                 }
             }
         }catch(Exception e){
+            System.out.println(e);
             return AuthResponse.builder()
                     .status(false)
                     .message("Internal Server Error")
@@ -169,10 +176,14 @@ public class AuthService {
     public Response<?> logout(UserDTO userDTO) {
         Optional<User> existingUser = userRepository.findById(userDTO.getId());
         if(existingUser.isPresent()){
-            if (existingUser.get().getToken() != null){
-                refreshTokenRepository.delete(existingUser.get().getToken());
+            User savedUser = existingUser.get();
+            if (savedUser.getToken() != null){
+                RefreshToken token = savedUser.getToken();
+                savedUser.setToken(null);
+                userRepository.save(savedUser);
+                refreshTokenRepository.delete(token);
                 return Response.builder()
-                        .status(false)
+                        .status(true)
                         .message("User Logout Success")
                         .build();
             }else{
