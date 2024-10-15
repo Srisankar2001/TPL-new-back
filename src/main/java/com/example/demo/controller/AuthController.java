@@ -29,4 +29,7 @@ public class AuthController {
     public Response<?> decode(@RequestBody TokenRequest tokenRequest){
         return authService.decode(tokenRequest);
     }
+
+    @PostMapping("/logout")
+    public Response<?> logout(@RequestBody UserDTO userDTO){return authService.logout(userDTO);};
 }

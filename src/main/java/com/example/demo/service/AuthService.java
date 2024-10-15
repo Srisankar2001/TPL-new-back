@@ -97,6 +97,7 @@ public class AuthService {
                             .accessTokenExpireAt((Date) listAccessToken.get(1))
                             .refreshToken((String) listRefreshToken.get(0))
                             .refreshTokenExpireAt((Date) listRefreshToken.get(1))
+                            .user(savedUser)
                             .build();
                 }else{
                     return null;
@@ -163,5 +164,28 @@ public class AuthService {
                         .message("User Not Found")
                         .build();
             }
+    }
+
+    public Response<?> logout(UserDTO userDTO) {
+        Optional<User> existingUser = userRepository.findById(userDTO.getId());
+        if(existingUser.isPresent()){
+            if (existingUser.get().getToken() != null){
+                refreshTokenRepository.delete(existingUser.get().getToken());
+                return Response.builder()
+                        .status(false)
+                        .message("User Logout Success")
+                        .build();
+            }else{
+                return Response.builder()
+                        .status(false)
+                        .message("User Is Not Logged in")
+                        .build();
+            }
+        }else{
+            return Response.builder()
+                    .status(false)
+                    .message("User Not Found")
+                    .build();
+        }
     }
 }

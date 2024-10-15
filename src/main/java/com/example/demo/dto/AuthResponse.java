@@ -1,5 +1,6 @@
 package com.example.demo.dto;
 
+import com.example.demo.entity.User;
 import lombok.AllArgsConstructor;
 import lombok.Builder;
 import lombok.Data;
@@ -16,6 +17,7 @@ import java.util.Date;
 public class AuthResponse {
     private Boolean status;
     private String message;
+    private User user;
     private String accessToken;
     private String refreshToken;
     private Date accessTokenExpireAt;
