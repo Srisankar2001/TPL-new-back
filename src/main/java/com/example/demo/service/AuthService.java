@@ -124,10 +124,22 @@ public class AuthService {
             }
         }catch(Exception e){
             System.out.println(e);
-            return AuthResponse.builder()
-                    .status(false)
-                    .message("Internal Server Error")
-                    .build();
+//            return AuthResponse.builder()
+//                    .status(false)
+//                    .message("Incorrect Email or Password")
+//                    .build();
+            Optional<User> user = userRepository.findByEmail(loginRequest.getEmail());
+            if(user.isPresent()){
+                return AuthResponse.builder()
+                        .status(false)
+                        .message("Password Is Wrong")
+                        .build();
+            }else{
+                return AuthResponse.builder()
+                        .status(false)
+                        .message("Email Not Registered")
+                        .build();
+            }
         }
     }
 
