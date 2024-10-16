@@ -55,7 +55,7 @@ public class JWTService {
             Map<String,Object> claims = new HashMap<>();
             claims.put("id",user.getId());
             Date issueAt = new Date(System.currentTimeMillis());
-            Date expireAt = new Date(System.currentTimeMillis() +  1000*60*60);
+            Date expireAt = new Date(System.currentTimeMillis() +  1000*60*1);
             String token =  Jwts.builder()
                     .claims(claims)
                     .subject(user.getEmail())
@@ -75,7 +75,7 @@ public class JWTService {
             Map<String,Object> claims = new HashMap<>();
             claims.put("id",user.getId());
             Date issueAt = new Date(System.currentTimeMillis());
-            Date expireAt = new Date(System.currentTimeMillis() +  1000*60*60*24);
+            Date expireAt = new Date(System.currentTimeMillis() +  1000*60*5);
             String token = Jwts.builder()
                     .claims(claims)
                     .subject(user.getEmail())
